@@ -13,7 +13,7 @@ var DEFAULT_OPTS = {
 
 var DEFAULT_PARAMS = {
 	Handler: 'index.handler',
-	Runtime: 'nodejs4.3'
+	Runtime: 'nodejs12.x'
 };
 
 

@@ -1,0 +1,11 @@
+{
+  "bitwise": true,
+  "browser": false,
+  "esversion": 8,
+  "globals": {},
+  "node": true,
+  "quotmark": true,
+  "strict": "global",
+  "undef": true,
+  "unused": true
+}

@@ -1,4 +1,5 @@
 'use strict';
+
 var AWS = require('aws-sdk');
 var gutil = require('gulp-util');
 var through = require('through2');
@@ -114,7 +115,7 @@ module.exports = function(params, opts) {
 		if (opts.alias) {
 			if (!opts.alias.name) {
 				return cb(makeErr('Alias requires a ' + gutil.colors.red('name') + ' parameter'));
-			} else if (!(typeof opts.alias.name === 'string')) {
+			} else if (typeof opts.alias.name !== 'string') {
 				return cb(makeErr('Alias ' + gutil.colors.red('name') + ' must be a string'));
 			}
 		}

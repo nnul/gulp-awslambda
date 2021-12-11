@@ -84,12 +84,28 @@ module.exports = function(params, opts) {
 		}
 	};
 	var successfulUpdate = function(response) {
-		printVersion(response);
-		updateOrCreateAlias(response);
+		lambda.waitFor('functionUpdated', {
+			FunctionName: functionName
+		}, function(err) {
+			if (err) {
+				gutil.log('Failed waiting for function update:' + err);
+			} else {
+				printVersion(response);
+				updateOrCreateAlias(response);
+			}
+		});
 	};
 	var successfulCreation = function(response) {
-		printVersion(response);
-		updateOrCreateAlias(response);
+		lambda.waitFor('functionActive', {
+			FunctionName: functionName
+		}, function(err) {
+			if (err) {
+				gutil.log('Failed waiting for function creation:' + err);
+			} else {
+				printVersion(response);
+				updateOrCreateAlias(response);
+			}
+		});
 	};
 
 	var transform = function(file, enc, cb) {
@@ -155,13 +171,22 @@ module.exports = function(params, opts) {
 					// Updating code + config
 					var runtime = params.Runtime;
 					updateFunctionCode(lambda, params.FunctionName, toUpload, params, opts)
-						.on('success', successfulUpdate)
 						.send(function() {
-							delete params.Code;
-							if (runtime) {
-								params.Runtime = runtime;
-							}
-							lambda.updateFunctionConfiguration(params, done);
+							lambda.waitFor('functionUpdated', {
+								FunctionName: params.FunctionName
+							}, function(err) {
+								if (err) {
+									return cb(makeErr(err.message));
+								} else {
+									delete params.Code;
+									if (runtime) {
+										params.Runtime = runtime;
+									}
+									lambda.updateFunctionConfiguration(params)
+										.on('success', successfulUpdate)
+										.send(done);
+								}
+							});
 						});
 				}
 			});

@@ -1,6 +1,8 @@
 'use strict';
+
+require('should');
+
 var proxyquire = require('proxyquire');
-//var should = require('should');
 var sinon = require('sinon');
 
 var gulp = require('gulp');
@@ -18,7 +20,7 @@ var mock = function(sandbox, args, done, cb) {
 
 	stream.write(new gutil.File({
 		path: fixtures(args.fixture),
-		contents: new Buffer(args.contents),
+		contents: Buffer.from(args.contents),
 	}));
 
 	stream.on('data', cb);
@@ -115,7 +117,10 @@ describe('gulp-awslambda', function() {
 	});
 
 	it('should update code if passed a string', function(done) {
-		var mocked = lambdaPlugin(sandbox, { 'updateFunctionCode': null });
+		var mocked = lambdaPlugin(sandbox, {
+			'updateFunctionCode': null,
+			'waitFor': null
+		});
 		mock(sandbox, {
 			stream: mocked.plugin('someFunction'),
 			fixture: 'hello.zip',
@@ -135,6 +140,7 @@ describe('gulp-awslambda', function() {
 		var mocked = lambdaPlugin(sandbox, {
 			'getFunctionConfiguration': true,  // Cause an error
 			'createFunction': null,
+			'waitFor': null,
 		});
 		mock(sandbox, {
 			stream: mocked.plugin({ FunctionName: 'foo' }),
@@ -148,7 +154,7 @@ describe('gulp-awslambda', function() {
 					ZipFile: file.contents,
 				},
 				Handler: 'index.handler',
-				Runtime: 'nodejs4.3',
+				Runtime: 'nodejs12.x',
 				Publish: false,
 			});
 		});
@@ -159,6 +165,7 @@ describe('gulp-awslambda', function() {
 			'getFunctionConfiguration': null,
 			'updateFunctionCode': null,
 			'updateFunctionConfiguration': null,
+			'waitFor': null,
 		});
 		mock(sandbox, {
 			stream: mocked.plugin({ FunctionName: 'bar' }),
@@ -182,6 +189,7 @@ describe('gulp-awslambda', function() {
 			'getFunctionConfiguration': null,
 			'updateFunctionCode': null,
 			'updateFunctionConfiguration': null,
+			'waitFor': null,
 		});
 		mock(sandbox, {
 			stream: mocked.plugin({ FunctionName: 'bar', Runtime: 'nodejs6.10' }),
@@ -199,6 +207,7 @@ describe('gulp-awslambda', function() {
 		var mocked = lambdaPlugin(sandbox, {
 			'getFunctionConfiguration': true,  // Cause an error
 			'createFunction': null,
+			'waitFor': null,
 		});
 		mock(sandbox, {
 			stream: mocked.plugin({
@@ -221,6 +230,7 @@ describe('gulp-awslambda', function() {
 	it('should allow publishing for update from a string', function(done) {
 		var mocked = lambdaPlugin(sandbox, {
 			'updateFunctionCode': { data: { Version: 1 } },
+			'waitFor': null,
 		});
 		mock(sandbox, {
 			stream: mocked.plugin('someFunction', { publish: true }),
@@ -234,7 +244,8 @@ describe('gulp-awslambda', function() {
 	it('should favor Publish from params over opts', function(done) {
 		var mocked = lambdaPlugin(sandbox, {
 			'getFunctionConfiguration': true,  // Cause an error
-			'createFunction': null
+			'createFunction': null,
+			'waitFor': null,
 		});
 		mock(sandbox, {
 			stream: mocked.plugin({
@@ -273,6 +284,7 @@ describe('gulp-awslambda', function() {
 			'updateFunctionCode': { data: { Version: 1 } },
 			'getAlias': true,  // Cause an error
 			'createAlias': null,
+			'waitFor': null,
 		});
 		mock(sandbox, {
 			stream: mocked.plugin('someFunction', { publish: true, alias: { name: 'alias' } }),
@@ -297,6 +309,7 @@ describe('gulp-awslambda', function() {
 			'updateFunctionCode': { data: { Version: 1 } },
 			'getAlias': null,
 			'updateAlias': null,
+			'waitFor': null,
 		});
 		// Also test all alias options
 		var alias = { name: 'alias', description: 'my alias', version: 42 };

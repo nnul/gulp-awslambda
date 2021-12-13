@@ -182,9 +182,8 @@ module.exports = function(params, opts) {
 									if (runtime) {
 										params.Runtime = runtime;
 									}
-									lambda.updateFunctionConfiguration(params)
-										.on('success', successfulUpdate)
-										.send(done);
+									lambda.updateFunctionConfiguration(params, done)
+										.on('success', successfulUpdate);
 								}
 							});
 						});

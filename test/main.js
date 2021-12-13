@@ -1,6 +1,6 @@
 'use strict';
 var proxyquire = require('proxyquire');
-var should = require('should');
+//var should = require('should');
 var sinon = require('sinon');
 
 var gulp = require('gulp');
@@ -187,7 +187,7 @@ describe('gulp-awslambda', function() {
 			stream: mocked.plugin({ FunctionName: 'bar', Runtime: 'nodejs6.10' }),
 			fixture: 'hello.zip',
 			contents: 'test updateFunctionConfiguration',
-		}, done, function(file) {
+		}, done, function(/*file*/) {
 			mocked.methods.updateFunctionConfiguration.firstCall.args[0].should.eql({
 				FunctionName: 'bar',
 				Runtime: 'nodejs6.10',
@@ -210,7 +210,7 @@ describe('gulp-awslambda', function() {
 			}),
 			fixture: 'hello.zip',
 			contents: 'test createFunction',
-		}, done, function(file) {
+		}, done, function(/*file*/) {
 			mocked.methods.createFunction.firstCall.args[0].Code.should.eql({
 				S3Bucket: 'myBucket',
 				S3Key: 'function.zip',
@@ -226,7 +226,7 @@ describe('gulp-awslambda', function() {
 			stream: mocked.plugin('someFunction', { publish: true }),
 			fixture: 'hello.zip',
 			contents: 'test updateFunctionCode',
-		}, done, function(file) {
+		}, done, function(/*file*/) {
 			mocked.methods.updateFunctionCode.firstCall.args[0].Publish.should.eql(true);
 		});
 	});
@@ -243,7 +243,7 @@ describe('gulp-awslambda', function() {
 			}, { publish: false }),
 			fixture: 'hello.zip',
 			contents: 'test createFunction',
-		}, done, function(file) {
+		}, done, function(/*file*/) {
 			mocked.methods.createFunction.firstCall.args[0].Publish.should.eql(true);
 		});
 	});
@@ -278,7 +278,7 @@ describe('gulp-awslambda', function() {
 			stream: mocked.plugin('someFunction', { publish: true, alias: { name: 'alias' } }),
 			fixture: 'hello.zip',
 			contents: 'test updateFunctionCode',
-		}, done, function(file) {
+		}, done, function(/*file*/) {
 			mocked.methods.getAlias.firstCall.args[0].should.eql({
 				FunctionName: 'someFunction',
 				Name: 'alias',
@@ -304,7 +304,7 @@ describe('gulp-awslambda', function() {
 			stream: mocked.plugin('someFunction', { publish: true, alias: alias }),
 			fixture: 'hello.zip',
 			contents: 'test updateFunctionCode',
-		}, done, function(file) {
+		}, done, function(/*file*/) {
 			mocked.methods.updateAlias.firstCall.args[0].should.eql({
 				FunctionName: 'someFunction',
 				FunctionVersion: '42',

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "coverage": "nyc yarn test",
-    "lint": "eslint index.js",
+    "lint": "eslint ./test/ index.js",
     "test": " mocha"
   },
   "homepage": "https://github.com/willyg302/gulp-awslambda",

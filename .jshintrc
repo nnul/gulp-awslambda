@@ -3,6 +3,7 @@
   "browser": false,
   "esversion": 8,
   "globals": {},
+  "mocha": true,
   "node": true,
   "quotmark": true,
   "strict": "global",
